@@ -2,7 +2,8 @@ package com.bolosdamaisa.course.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.bolosdamaisa.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -33,6 +38,10 @@ public class Order implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private User client;
+	
+	@OneToMany(mappedBy = "id.order")
+	@Fetch(FetchMode.JOIN)
+	private Set<OrderItem> items = new HashSet<>();
 	
 	public Order() {}
 
@@ -78,6 +87,10 @@ public class Order implements Serializable {
 		}		
 	}
 
+	public Set<OrderItem> getItems(){
+		return items;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
